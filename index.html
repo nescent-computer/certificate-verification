@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Verification — Nescent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0f1117;
+      --paper: #faf9f6;
+      --gold: #b8963e;
+      --gold-light: #f5ecd7;
+      --green: #1e6648;
+      --green-light: #e6f4ed;
+      --red: #a32828;
+      --red-light: #fdecea;
+      --muted: #6b7280;
+      --border: #e5e2da;
+      --shadow: 0 2px 32px rgba(15,17,23,0.10);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background-image: radial-gradient(circle at 20% 20%, #f0ebe0 0%, transparent 60%),
+                        radial-gradient(circle at 80% 80%, #e8f0ea 0%, transparent 60%);
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 48px 40px 36px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      animation: rise 0.5s cubic-bezier(.22,1,.36,1) both;
+    }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .seal {
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 14px;
+      background: var(--gold-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      border: 2px solid var(--gold);
+    }
+
+    .institute {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--ink);
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
+
+    .tagline {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0 0 28px;
+    }
+
+    /* Status badges */
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+    .status-icon { font-size: 20px; }
+    .status.valid   { background: var(--green-light); color: var(--green); }
+    .status.invalid { background: var(--red-light);   color: var(--red); }
+    .status.warn    { background: var(--gold-light);  color: #7a5c1e; }
+
+    /* Detail rows */
+    .details { width: 100%; }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 16px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+      animation: fadein 0.4s ease both;
+    }
+    .row:last-child { border-bottom: none; }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateX(-6px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .row:nth-child(1) { animation-delay: 0.05s; }
+    .row:nth-child(2) { animation-delay: 0.10s; }
+    .row:nth-child(3) { animation-delay: 0.15s; }
+    .row:nth-child(4) { animation-delay: 0.20s; }
+    .row:nth-child(5) { animation-delay: 0.25s; }
+    .row:nth-child(6) { animation-delay: 0.30s; }
+
+    .lbl {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .val {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+      text-align: right;
+    }
+
+    .message {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .footer {
+      margin-top: 28px;
+      font-size: 11px;
+      color: #bbb;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    /* Loading spinner */
+    .spinner {
+      width: 28px; height: 28px;
+      border: 3px solid var(--border);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text { font-size: 13px; color: var(--muted); text-align: center; }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="seal">🎓</div>
+    <div class="institute">Nescent Computer Education Centre</div>
+    <div class="tagline">Certificate Verification Portal</div>
+  </div>
+
+  <hr class="divider">
+
+  <div id="content">
+    <div class="spinner"></div>
+    <div class="loading-text">Verifying certificate…</div>
+  </div>
+
+  <div class="footer">Powered by Nescent Computer Education Centre</div>
+</div>
+
+<script>
+  // ✏️ CONFIGURE HERE — column positions (0 = first column)
+  const COL = {
+    name:     0,  // A - Student Name
+    course:   1,  // B - Course Title
+    date:     2,  // C - Date of Issue
+    certno:   3,  // D - Certificate No.
+    duration: 4,  // E - Duration
+    grade:    5,  // F - Grade
+    refid:    6,  // G - Unique Reference ID
+  };
+
+  const CSV_FILE = 'data.csv';
+
+  function getParam(key) {
+    return new URLSearchParams(window.location.search).get(key)?.trim() ?? '';
+  }
+
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  function parseCSV(text) {
+    const rows = [];
+    const lines = text.split(/\r?\n/);
+    for (const line of lines) {
+      if (!line.trim()) continue;
+      // Basic CSV parse (handles quoted fields)
+      const cols = [];
+      let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') { inQ = !inQ; }
+        else if (ch === ',' && !inQ) { cols.push(cur); cur = ''; }
+        else { cur += ch; }
+      }
+      cols.push(cur);
+      rows.push(cols);
+    }
+    return rows;
+  }
+
+  function render(html) {
+    document.getElementById('content').innerHTML = html;
+  }
+
+  function showNoId() {
+    render(`
+      <div class="status warn">
+        <span class="status-icon">⚠️</span>
+        <span>No ID Provided</span>
+      </div>
+      <p class="message">Please scan a valid certificate QR code.</p>
+    `);
+  }
+
+  function showInvalid() {
+    render(`
+      <div class="status invalid">
+        <span class="status-icon">❌</span>
+        <span>Invalid Certificate</span>
+      </div>
+      <p class="message">This certificate could not be verified. It may be fake or tampered with.</p>
+    `);
+  }
+
+  function showValid(student) {
+    const rows = [
+      ['Student Name',    student[COL.name]],
+      ['Course Title',    student[COL.course]],
+      ['Date of Issue',   student[COL.date]],
+      ['Certificate No.', student[COL.certno]],
+      ['Duration',        student[COL.duration]],
+      ['Grade',           student[COL.grade]],
+    ].map(([label, value]) => `
+      <div class="row">
+        <span class="lbl">${esc(label)}</span>
+        <span class="val">${esc(value ?? '')}</span>
+      </div>
+    `).join('');
+
+    render(`
+      <div class="status valid">
+        <span class="status-icon">✅</span>
+        <span>Certificate Verified</span>
+      </div>
+      <div class="details">${rows}</div>
+    `);
+  }
+
+  async function main() {
+    const id = getParam('id');
+    if (!id) { showNoId(); return; }
+
+    try {
+      const res = await fetch(CSV_FILE + '?nocache=' + Date.now());
+      if (!res.ok) throw new Error('CSV not found');
+      const text = await res.text();
+      const rows = parseCSV(text);
+
+      // Skip header row, search for matching ID
+      const match = rows.slice(1).find(r => (r[COL.refid] ?? '').trim() === id);
+      match ? showValid(match) : showInvalid();
+    } catch (e) {
+      render(`
+        <div class="status invalid">
+          <span class="status-icon">⚠️</span>
+          <span>Error Loading Data</span>
+        </div>
+        <p class="message">Could not load certificate data. Please try again later.</p>
+      `);
+    }
+  }
+
+  main();
+</script>
+</body>
+</html>
